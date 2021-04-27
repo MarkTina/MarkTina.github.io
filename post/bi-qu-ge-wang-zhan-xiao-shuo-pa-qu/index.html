@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>笔趣阁网站小说爬取 | Gridea</title>
-<link rel="shortcut icon" href="https://marktina.github.io//favicon.ico?v=1619539688896">
+<link rel="shortcut icon" href="https://marktina.github.io//favicon.ico?v=1619539816433">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://marktina.github.io//styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="笔趣阁网站小说爬取 | Gridea - Atom Feed" href="https://marktina.github.io//atom.xml">
@@ -28,7 +28,7 @@ https://www.xbiquge.cc/book/52318/
       <div class="main-content">
         <div class="site-header">
   <a href="https://marktina.github.io/">
-  <img class="avatar" src="https://marktina.github.io//images/avatar.png?v=1619539688896" alt="">
+  <img class="avatar" src="https://marktina.github.io//images/avatar.png?v=1619539816433" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -111,12 +111,12 @@ https://www.xbiquge.cc/book/52318/</p>
 https://www.xbiquge.cc/book/52318/34917539.html</p>
 <p>直接看目录的结构：<br>
 <img src="https://marktina.github.io//post-images/1619538587555.jpg" alt="" loading="lazy"><br>
-可以看见每一章的链接都隐藏在章节内的<a>标签内；</p>
+可以看见每一章的链接都隐藏在章节内的<code>&lt;a&gt;</code>标签内；</p>
 <p>查看每章小说内的内容<br>
 <img src="https://marktina.github.io//post-images/1619538744263.jpg" alt="" loading="lazy"><br>
-都放置在一个 <div>内；</p>
+都放置在一个 <code>&lt;div&gt;</code>内；</p>
 <h1 id="三-爬取思路">三、爬取思路</h1>
-<p>1.首选进入输入目标小说的目录url，获取所有章节的地址，并对章节名称，序位做标记；<br>
+<p>1.首选进入输入目标小说的目录 url ，获取所有章节的地址，并对章节名称，序位做标记；<br>
 2.多线程或者多进程爬取每章小说的正文内容；<br>
 3.生成每一章节的 txt 文本，已【序位-章节名】的命名格式保存；</p>
 <h1 id="四-代码实现">四、代码实现</h1>
@@ -207,15 +207,6 @@ if __name__ == '__main__':
           </article>
         </div>
 
-        
-          <div class="next-post">
-            <div class="next">下一篇</div>
-            <a href="https://marktina.github.io/post/hello-gridea/">
-              <h3 class="post-title">
-                Hello Gridea
-              </h3>
-            </a>
-          </div>
         
 
         
