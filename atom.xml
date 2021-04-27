@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://marktina.github.io/</id>
     <title>Gridea</title>
-    <updated>2021-02-20T10:08:48.649Z</updated>
+    <updated>2021-04-27T16:08:15.079Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://marktina.github.io/"/>
     <link rel="self" href="https://marktina.github.io/atom.xml"/>
@@ -10,6 +10,105 @@
     <logo>https://marktina.github.io/images/avatar.png</logo>
     <icon>https://marktina.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[笔趣阁网站小说爬取]]></title>
+        <id>https://marktina.github.io/post/bi-qu-ge-wang-zhan-xiao-shuo-pa-qu/</id>
+        <link href="https://marktina.github.io/post/bi-qu-ge-wang-zhan-xiao-shuo-pa-qu/">
+        </link>
+        <updated>2021-04-27T15:43:26.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="一-目标网站">一、目标网站</h1>
+<p>www.xbiquge.cc</p>
+<h1 id="二-结构分析">二、结构分析</h1>
+<p>这种类型的网站，结构上基本上大同小异，没什么难点。</p>
+<p>随便点击一本小说目录url：<br>
+https://www.xbiquge.cc/book/52318/</p>
+<p>随便点击一章小说目录url：<br>
+https://www.xbiquge.cc/book/52318/34917539.html</p>
+<p>直接看目录的结构：<br>
+<img src="https://marktina.github.io//post-images/1619538587555.jpg" alt="" loading="lazy"><br>
+可以看见每一章的链接都隐藏在章节内的<a>标签内；</p>
+<p>查看每章小说内的内容<br>
+<img src="https://marktina.github.io//post-images/1619538744263.jpg" alt="" loading="lazy"><br>
+都放置在一个 <div>内；</p>
+<h1 id="三-爬取思路">三、爬取思路</h1>
+<p>1.首选进入输入目标小说的目录url，获取所有章节的地址，并对章节名称，序位做标记；<br>
+2.多线程或者多进程爬取每章小说的正文内容；<br>
+3.生成每一章节的 txt 文本，已【序位-章节名】的命名格式保存；</p>
+<h1 id="四-代码实现">四、代码实现</h1>
+<pre><code class="language-python">import requests
+import bs4
+import re
+import concurrent.futures
+import os
+
+
+def get_txt(t):
+    # 元组拆包
+    title, url = t[0], t[1]
+    # 检验该内容是否已下载
+    if os.path.exists(title):
+        print(title, '已存在')
+    # 获取url内的正文
+    else:
+        s = requests.get(url, headers).content
+        soup = bs4.BeautifulSoup(s, 'lxml')
+        txt = soup.find('div', id='content').text
+        # 替换特殊符号
+        p1 = re.compile('    ')
+        # 替换掉笔趣阁广告部分
+        p2 = re.compile('笔趣阁.*?！')
+        txt = p1.sub('\n    ', txt)
+        txt = p2.sub(' ', txt)
+        # 正文第一行对标题做处理
+        txt = title.replace('.txt', '') + '\n' + txt
+        with open(title, 'w', encoding=&quot;utf-8&quot;) as f:
+            f.write(txt)
+        print(title, ' 下载完成')
+
+
+def get_all_url(url='https://www.xbiquge.cc/book/4772/'):
+    # 根据输入的小说目录地址，获取所有章节url
+    s = requests.get(url, headers).content
+    soup = bs4.BeautifulSoup(s, 'lxml')
+    url_list = soup.find('dl').find_all('dd')
+    u_l = []
+    for i in url_list:
+            # 以元组的方式保存章节名称及url
+            try:
+                u_l.append((i.find('a')['href'][:-5] + '-' + i.find('a').text.replace(' ', '-') + '.txt', url + i.find('a')['href']))
+            except:
+                pass
+    print('获得所有章节链接')
+    # 返回集合去重，因为目录内 最近跟新部分 和 所有章节部分有重复；
+    u_l = set(u_l)
+    return u_l
+
+
+def threading_start_function(url_list):
+    # 建立线程池，并分配线程任务
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.map(get_txt, url_list)
+
+
+def main():
+    print('--------------------------------------------------\n'
+          '1.下载   https://www.xbiquge.cc/   网站下的图书，才可使用本脚本\n'
+          '2.若下载章节过多，速度变慢，关闭程序，重新开始下载，即可下载剩余部分\n'
+          '--------------------------------------------------\n')
+    mulu = input('\n请在下方输入目录链接\n↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓\n')
+    u_l = list(get_all_url(mulu))
+    print('获得小说章数: ', len(u_l), '\n马上开始下载')
+    print(u_l)
+    threading_start_function(u_l)
+    print('\n\n下载完成\n\n')
+
+
+if __name__ == '__main__':
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36'}
+    main()
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://marktina.github.io/post/hello-gridea/</id>
